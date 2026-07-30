@@ -27,7 +27,6 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-[#04070f]">
-      <h1 className="sr-only">Adrian Llano — AI Business Systems Engineer</h1>
       {mounted && (
         <Suspense fallback={null}>
           <PortfolioApp />
