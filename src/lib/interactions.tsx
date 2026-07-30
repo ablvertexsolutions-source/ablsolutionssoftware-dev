@@ -254,6 +254,16 @@ export function SplitWords({
 }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once, margin: "-10% 0px -10% 0px" });
+  const [fallback, setFallback] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const el = ref.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0) setFallback(true);
+    }, 1600);
+    return () => clearTimeout(t);
+  }, []);
   const words = text.split(" ");
   return (
     <span ref={ref} className={className} style={{ display: "inline-block" }}>
@@ -262,7 +272,7 @@ export function SplitWords({
           <motion.span
             className={`inline-block ${wordClassName}`}
             initial={{ y: "110%", opacity: 0, filter: "blur(8px)" }}
-            animate={inView ? { y: "0%", opacity: 1, filter: "blur(0px)" } : {}}
+            animate={inView || fallback ? { y: "0%", opacity: 1, filter: "blur(0px)" } : {}}
             transition={{
               duration: 1,
               delay: delay + i * stagger,
