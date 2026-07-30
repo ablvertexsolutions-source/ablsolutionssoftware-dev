@@ -1,6 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { PROFILE, PROJECTS } from "../lib/data";
+import { sendDemoRequest } from "../lib/contact.functions";
 import { lockScroll } from "../lib/smooth";
 import Button from "./ui/PremiumButton";
 
@@ -28,10 +30,17 @@ const inputCls =
 
 export function DemoForm({ onSent }: { onSent?: () => void }) {
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const inFlight = useRef(false);
+  const send = useServerFn(sendDemoRequest);
   const [form, setForm] = useState({
     name: "",
-    email: "",
     company: "",
+    email: "",
+    phone: "",
+    country: "",
+    subject: "",
     system: SYSTEMS[0],
     message: "",
   });
@@ -39,28 +48,36 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
   const set = (k: keyof typeof form) => (e: { target: { value: string } }) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
-  const submit = (e: FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
-    const body = [
-      `Name: ${form.name}`,
-      `Company: ${form.company}`,
-      `Email: ${form.email}`,
-      `System of interest: ${form.system}`,
-      "",
-      form.message,
-      "",
-      "— Sent from adrianllano.dev",
-    ].join("\n");
-
-    const url = `mailto:${PROFILE.email}?subject=${encodeURIComponent(
-      "Software Demo Request"
-    )}&body=${encodeURIComponent(body)}`;
-
-    setSent(true);
-    window.setTimeout(() => {
-      window.location.href = url;
-      onSent?.();
-    }, 700);
+    if (inFlight.current) return;
+    inFlight.current = true;
+    setSending(true);
+    setError(null);
+    try {
+      const res = await send({ data: form });
+      if (res?.ok) {
+        setSent(true);
+        setForm({
+          name: "",
+          company: "",
+          email: "",
+          phone: "",
+          country: "",
+          subject: "",
+          system: SYSTEMS[0],
+          message: "",
+        });
+        onSent?.();
+      } else {
+        setError(res?.error ?? "Something went wrong. Please try again.");
+      }
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
+      setSending(false);
+      inFlight.current = false;
+    }
   };
 
   return (
@@ -98,12 +115,45 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Company">
                 <input
+                  required
                   value={form.company}
                   onChange={set("company")}
                   placeholder="Northwind Group"
                   className={inputCls}
                 />
               </Field>
+              <Field label="Phone">
+                <input
+                  required
+                  type="tel"
+                  value={form.phone}
+                  onChange={set("phone")}
+                  placeholder="+1 555 010 2233"
+                  className={inputCls}
+                />
+              </Field>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Country">
+                <input
+                  required
+                  value={form.country}
+                  onChange={set("country")}
+                  placeholder="United States"
+                  className={inputCls}
+                />
+              </Field>
+              <Field label="Subject">
+                <input
+                  required
+                  value={form.subject}
+                  onChange={set("subject")}
+                  placeholder="Payroll demo for 60 staff"
+                  className={inputCls}
+                />
+              </Field>
+            </div>
+            <div className="grid gap-4">
               <Field label="System of interest">
                 <select value={form.system} onChange={set("system")} className={inputCls}>
                   {SYSTEMS.map((s) => (
@@ -117,6 +167,7 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
             <Field label="What would you like to see?">
               <textarea
                 rows={4}
+                required
                 value={form.message}
                 onChange={set("message")}
                 placeholder="We run payroll for 60 staff across two entities and month-end takes a week…"
@@ -125,12 +176,32 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
             </Field>
 
             <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
-              <p className="max-w-[15rem] text-[11px] leading-relaxed text-white/30">
-                Submitting opens your mail client with the request pre-written.
+              <p
+                className={`max-w-[16rem] text-[11px] leading-relaxed ${
+                  error ? "text-rose-300/80" : "text-white/30"
+                }`}
+                role={error ? "alert" : undefined}
+              >
+                {error ?? `Your request is delivered straight to ${PROFILE.email}.`}
               </p>
-              <Button type="submit" cursorLabel="Send">
-                Send Request
-              </Button>
+              <div className={sending ? "pointer-events-none opacity-60" : ""}>
+                <Button
+                  type="submit"
+                  cursorLabel="Send"
+                  icon={
+                    sending ? (
+                      <motion.span
+                        aria-hidden
+                        className="block h-3.5 w-3.5 rounded-full border-2 border-white/30 border-t-white"
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
+                      />
+                    ) : undefined
+                  }
+                >
+                  {sending ? "Sending…" : "Send Request"}
+                </Button>
+              </div>
             </div>
           </motion.form>
         ) : (
@@ -151,14 +222,10 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
               </svg>
             </motion.span>
             <p className="font-display text-xl font-light tracking-tight text-white">
-              Opening your mail client…
+              Thank you! Your request has been sent successfully.
             </p>
             <p className="mx-auto mt-3 max-w-sm text-[13px] leading-relaxed text-white/45">
-              If nothing happens, email{" "}
-              <a href={`mailto:${PROFILE.email}`} className="text-cyan-300/90 underline-offset-4 hover:underline">
-                {PROFILE.email}
-              </a>{" "}
-              with the subject “Software Demo Request”.
+              I'll reply personally within one business day at the email you provided.
             </p>
           </motion.div>
         )}
