@@ -81,17 +81,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "AI business systems engineer building payroll, hospitality, fleet and accounting software." },
       { name: "author", content: "Adrian Llano" },
       { property: "og:title", content: "Adrian Llano — AI Business Systems Engineer" },
-      { property: "og:description", content: "Payroll, hospitality, fleet and accounting systems built by an operator turned engineer." },
+      { property: "og:description", content: "AI business systems engineer building payroll, hospitality, fleet and accounting software." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Adrian Llano — AI Business Systems Engineer" },
+      { name: "twitter:description", content: "AI business systems engineer building payroll, hospitality, fleet and accounting software." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/fff1a807-e6fd-4771-b374-eeff4b2dbca6" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/fff1a807-e6fd-4771-b374-eeff4b2dbca6" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
