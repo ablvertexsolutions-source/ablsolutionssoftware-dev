@@ -1,3 +1,5 @@
+import serenityVideo from "../assets/serenity-resort.mp4.asset.json";
+
 export type Project = {
   id: string;
   index: string;
@@ -84,7 +86,7 @@ export const PROJECTS: Project[] = [
       { value: 0, suffix: "", label: "Double bookings" },
       { value: 12, suffix: "hrs", label: "Saved weekly" },
     ],
-    video: "/videos/serenity-resort.mp4",
+    video: serenityVideo.url,
     device: "monitor",
   },
   {
