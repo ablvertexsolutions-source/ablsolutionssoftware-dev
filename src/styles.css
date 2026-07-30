@@ -142,3 +142,268 @@
     color: var(--color-foreground);
   }
 }
+
+/* ══════════════════════════════════════════════════
+   Portfolio design system (Adrian Llano)
+   ══════════════════════════════════════════════════ */
+
+@theme {
+  --color-void: #04070f;
+  --color-abyss: #070c18;
+  --color-ink: #0b1222;
+  --color-steel: #8fa3c4;
+  --color-mist: #c9d7ee;
+  --color-electric: #3b82f6;
+  --color-cyan: #22d3ee;
+  --color-azure: #60a5fa;
+  --color-deep: #1d4ed8;
+
+  --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root {
+  color-scheme: dark;
+  --glow: 59, 130, 246;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  background: #04070f;
+  color: #e8eefb;
+  font-family: var(--font-body);
+  overflow-x: clip;
+}
+
+body {
+  margin: 0;
+}
+
+/* ── Lenis ─────────────────────────────────────────── */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* ── Cursor ────────────────────────────────────────── */
+@media (hover: hover) and (pointer: fine) {
+  .custom-cursor-active,
+  .custom-cursor-active * {
+    cursor: none !important;
+  }
+}
+
+/* ── Scrollbar ─────────────────────────────────────── */
+::selection {
+  background: rgba(59, 130, 246, 0.32);
+  color: #fff;
+}
+::-webkit-scrollbar {
+  width: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #04070f;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #1d4ed8, #22d3ee);
+  border-radius: 99px;
+}
+
+/* ── Utilities ─────────────────────────────────────── */
+@utility glass {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.075) 0%,
+    rgba(255, 255, 255, 0.022) 45%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+@utility glass-deep {
+  background: linear-gradient(160deg, rgba(10, 18, 35, 0.86), rgba(4, 7, 15, 0.92));
+  backdrop-filter: blur(34px) saturate(160%);
+  -webkit-backdrop-filter: blur(34px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@utility text-gradient {
+  background: linear-gradient(180deg, #ffffff 0%, #cfe0ff 46%, #7ba6f0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility text-gradient-blue {
+  background: linear-gradient(100deg, #60a5fa 0%, #22d3ee 48%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility edge-fade {
+  mask-image: linear-gradient(180deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
+}
+
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Keyframes ─────────────────────────────────────── */
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -14px, 0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.55;
+  }
+  70% {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes sweep {
+  0% {
+    transform: translateX(-120%) skewX(-18deg);
+  }
+  100% {
+    transform: translateX(320%) skewX(-18deg);
+  }
+}
+
+@keyframes ticker {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes eyelid {
+  0%,
+  91%,
+  100% {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  93%,
+  95% {
+    transform: scaleY(1);
+    opacity: 0.5;
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1) translateY(0);
+  }
+  50% {
+    transform: scale(1.014) translateY(-0.35%);
+  }
+}
+
+@keyframes bar-rise {
+  0%,
+  100% {
+    transform: scaleY(var(--a, 0.55));
+  }
+  50% {
+    transform: scaleY(var(--b, 1));
+  }
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-120%);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(520%);
+    opacity: 0;
+  }
+}
+
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -220;
+  }
+}
+
+@keyframes soft-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-ticker {
+  animation: ticker 42s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
