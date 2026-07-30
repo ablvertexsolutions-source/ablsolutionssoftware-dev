@@ -271,8 +271,8 @@ export function SplitWords({
         <span key={i} className="inline-block overflow-hidden align-bottom">
           <motion.span
             className={`inline-block ${wordClassName}`}
-            initial={{ y: "110%", opacity: 0, filter: "blur(8px)" }}
-            animate={inView || fallback ? { y: "0%", opacity: 1, filter: "blur(0px)" } : {}}
+            initial={{ y: "110%", opacity: 0 }}
+            animate={inView || fallback ? { y: "0%", opacity: 1 } : {}}
             transition={{
               duration: 1,
               delay: delay + i * stagger,
