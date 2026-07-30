@@ -2,7 +2,7 @@ import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-
 import { useState } from "react";
 import { NAV, PROFILE } from "../lib/data";
 import { scrollToSection, useActiveSection } from "../lib/smooth";
-import Button from "./ui/Button";
+import Button from "./ui/PremiumButton";
 
 const IDS = NAV.map((n) => n.id);
 

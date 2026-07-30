@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState, type FormEvent } from "react";
 import { PROFILE, PROJECTS } from "../lib/data";
 import { lockScroll } from "../lib/smooth";
-import Button from "./ui/Button";
+import Button from "./ui/PremiumButton";
 
 const SYSTEMS = [...PROJECTS.map((p) => p.name), "Custom business system"];
 

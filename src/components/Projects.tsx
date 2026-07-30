@@ -2,7 +2,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { PROJECTS, type Project } from "../lib/data";
 import { CountUp, Reveal, SplitWords, Tilt } from "../lib/interactions";
-import Button from "./ui/Button";
+import Button from "./ui/PremiumButton";
 import { IPhone, MacBook, Monitor, Tablet } from "./devices/Devices";
 import { SCREENS } from "./devices/Screens";
 

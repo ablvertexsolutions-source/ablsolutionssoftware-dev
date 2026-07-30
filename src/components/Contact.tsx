@@ -4,7 +4,7 @@ import { Reveal, SplitWords } from "../lib/interactions";
 import { scrollToSection } from "../lib/smooth";
 import { downloadResume } from "../lib/resume";
 import { DemoForm } from "./DemoForm";
-import Button from "./ui/Button";
+import Button from "./ui/PremiumButton";
 
 export default function Contact({ onDemo }: { onDemo: () => void }) {
   return (

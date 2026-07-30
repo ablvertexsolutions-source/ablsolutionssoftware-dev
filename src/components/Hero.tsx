@@ -5,7 +5,7 @@ import { SplitWords, useParallax } from "../lib/interactions";
 import { downloadResume } from "../lib/resume";
 import { scrollToSection } from "../lib/smooth";
 import Portrait, { type Intent } from "./Portrait";
-import Button from "./ui/Button";
+import Button from "./ui/PremiumButton";
 import { IPhone, MacBook, Monitor, Tablet } from "./devices/Devices";
 import { ConverterScreen, FuelScreen, PayrollScreen, ResortScreen } from "./devices/Screens";
 
