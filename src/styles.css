@@ -407,3 +407,14 @@ html.lenis body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Gradient text must survive Framer Motion's composited word spans:
+   each descendant repaints the inherited gradient itself. */
+.text-gradient > *,
+.text-gradient > * > *,
+.text-gradient-blue > *,
+.text-gradient-blue > * > * {
+  background-image: inherit;
+  background-clip: text;
+  color: transparent;
+}
