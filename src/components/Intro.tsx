@@ -130,16 +130,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
                   "radial-gradient(60% 45% at 50% 50%, rgba(2,4,10,0.82), rgba(2,4,10,0.35) 60%, transparent 80%)",
               }}
             />
-            <motion.div
-            className="relative"
-            initial={{ opacity: 0, scale: 1.14, filter: "blur(18px)" }}
-            animate={{
-              opacity: [0, 1, 1, 0],
-              scale: [1.14, 1, 1, 1.06],
-              filter: ["blur(18px)", "blur(0px)", "blur(0px)", "blur(16px)"],
-            }}
-            transition={{ duration: 2.4, delay: 2.6, times: [0, 0.28, 0.78, 1], ease: [0.16, 1, 0.3, 1] }}
-          >
+            <div className="relative">
             <div className="relative px-6 text-center">
               <h1
                 className="font-display text-[clamp(2.4rem,10vw,7rem)] font-light tracking-[0.16em]"
@@ -166,7 +157,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
                 transition={{ duration: 1.6, delay: 2.9, ease: "easeInOut" }}
               />
             </div>
-            </motion.div>
+            </div>
           </motion.div>
 
           {/* dissolve sparks */}
