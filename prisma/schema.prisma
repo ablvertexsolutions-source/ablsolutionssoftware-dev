@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model DemoRequest {
+  id             String   @id @default(cuid())
+  createdAt      DateTime @default(now())
+  fullName       String
+  companyName    String
+  email          String
+  phone          String
+  country        String
+  subject        String
+  systemInterest String
+  message        String
+  ipAddress      String?
+  userAgent      String?
+  status         String   @default("New")
+
+  @@map("demo_requests")
+}
