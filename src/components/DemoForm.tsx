@@ -200,7 +200,7 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
                     ) : undefined
                   }
                 >
-                  {sending ? "Sending…" : "Send Request"}
+                  {sending ? "Opening…" : "Send Demo Request"}
                 </Button>
               </div>
             </div>
@@ -223,10 +223,11 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
               </svg>
             </motion.span>
             <p className="font-display text-xl font-light tracking-tight text-white">
-              Thank you! Your request has been sent successfully.
+              Your mail app is opening with the request ready to send.
             </p>
             <p className="mx-auto mt-3 max-w-sm text-[13px] leading-relaxed text-white/45">
-              I'll reply personally within one business day at the email you provided.
+              Just hit send — it goes straight to {PROFILE.email}, and I reply personally within one
+              business day.
             </p>
           </motion.div>
         )}
