@@ -1,5 +1,3 @@
-import serenityVideo from "../assets/serenity-resort.mp4.asset.json";
-
 export type Project = {
   id: string;
   index: string;
@@ -15,6 +13,8 @@ export type Project = {
   stats: { value: number; suffix: string; label: string }[];
   video: string;
   device: "macbook" | "monitor" | "tablet" | "iphone";
+  /** Optional real product screenshot rendered inside the device mockup. */
+  screenshot?: string;
 };
 
 export const PROFILE = {
@@ -42,18 +42,33 @@ export const PROJECTS: Project[] = [
     index: "01",
     name: "ABL Payroll",
     category: "Workforce & Compliance Platform",
-    tagline: "Payroll that closes itself.",
+    tagline: "One Platform That Automates Your Entire Payroll Process",
     description:
-      "A full payroll engine built for growing companies: timesheet capture, statutory deductions, payslip generation and journal exports that reconcile to the cent — the whole cycle collapsed from three days into a single afternoon.",
+      "Every payroll cycle costs valuable time when attendance, leave requests, overtime, government deductions, and payroll calculations are handled manually.\n\nABL Payroll automates the complete workflow — from employee clock-in to final payslip — reducing payroll processing time, minimizing human error, and providing management with real-time visibility into workforce performance and labor costs.",
     year: "2025",
     accent: "#3b82f6",
     accentSoft: "rgba(59,130,246,0.18)",
-    stack: ["React", "TypeScript", "Supabase", "Postgres RLS", "Edge Functions"],
+    stack: [
+      "React",
+      "TypeScript",
+      "Supabase",
+      "AI Automation",
+      "GPS Tracking",
+      "Face ID",
+      "QR Attendance",
+      "Payroll Engine",
+      "Self Service",
+      "Cloud + Offline",
+    ],
     features: [
-      "Automated statutory & benefit computations",
-      "Timesheet → payslip pipeline with audit trail",
-      "Role-based access with row-level security",
-      "One-click journal export to QuickBooks / Xero",
+      "Reduce payroll processing time by up to 90%",
+      "Eliminate manual attendance encoding",
+      "Prevent time theft using GPS + Selfie Verification",
+      "Generate payroll in just a few clicks",
+      "View labor costs in real time",
+      "Improve payroll accuracy and compliance",
+      "Employee Self-Service Portal",
+      "Multi-branch ready",
     ],
     stats: [
       { value: 94, suffix: "%", label: "Less manual entry" },
@@ -62,32 +77,49 @@ export const PROJECTS: Project[] = [
     ],
     video: "/videos/abl-payroll.mp4",
     device: "macbook",
+    screenshot: "/images/abl-dashboard.jpg",
   },
   {
     id: "serenity-resort",
     index: "02",
     name: "Serenity Resort",
     category: "Hospitality Operations Suite",
-    tagline: "One calendar. Every room. Zero double bookings.",
+    tagline: "Complete Resort Management Suite",
     description:
-      "A property management system for boutique resorts — live availability grid, guest CRM, folio billing and housekeeping flow, all synchronised in real time across the front desk, mobile and the owner's dashboard.",
+      "Run your entire resort from one intelligent platform. Manage reservations, room availability, guest check-ins, restaurant sales, POS transactions, cash flow, expenses, housekeeping, maintenance, and business analytics — all in one centralized dashboard.\n\nSay goodbye to double bookings, manual spreadsheets, and scattered records. With real-time availability, automated reservation management, and live financial monitoring, every department stays connected so you can focus on growing your business.\n\nEverything your resort needs. One powerful system.",
     year: "2025",
     accent: "#22d3ee",
     accentSoft: "rgba(34,211,238,0.18)",
-    stack: ["React", "TypeScript", "Supabase Realtime", "Tailwind", "Stripe"],
+    stack: ["React", "TypeScript", "Supabase Realtime", "Tailwind", "POS Engine"],
     features: [
-      "Realtime availability & rate calendar",
-      "Guest profiles, folios and split billing",
-      "Housekeeping and maintenance boards",
-      "Owner analytics: RevPAR, ADR, occupancy",
+      "Smart Reservation & Booking Calendar",
+      "Advance Booking & Reservation Board",
+      "Real-Time Room Availability",
+      "Walk-In & Online Guest Management",
+      "Front Desk Check-In / Check-Out",
+      "Restaurant & POS Integration",
+      "Cash Flow Monitoring Dashboard",
+      "Daily Sales & Income Reports",
+      "Expense & Petty Cash Tracking",
+      "Occupancy Rate Analytics",
+      "Housekeeping Management",
+      "Maintenance & Repair Requests",
+      "Guest Profiles & Booking History",
+      "Automated Invoice & Official Receipt",
+      "Multiple Payment Methods (Cash, GCash, Card, Bank Transfer)",
+      "QR Code Booking Confirmation",
+      "Owner Executive Dashboard",
+      "Staff Activity Monitoring",
+      "Financial Reports & Profit Analysis",
     ],
     stats: [
       { value: 38, suffix: "%", label: "Higher occupancy clarity" },
       { value: 0, suffix: "", label: "Double bookings" },
       { value: 12, suffix: "hrs", label: "Saved weekly" },
     ],
-    video: serenityVideo.url,
-    device: "monitor",
+    video: "/videos/serenity-resort.mp4",
+    device: "macbook",
+    screenshot: "/images/serenity-dashboard.jpg",
   },
   {
     id: "fuel-saver",
