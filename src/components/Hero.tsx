@@ -91,7 +91,7 @@ export default function Hero({ onDemo }: { onDemo: () => void }) {
             </span>
           </motion.div>
 
-          <h1 className="mt-5 font-display text-[clamp(2.1rem,4.4vw,3.9rem)] font-light leading-[1.02] tracking-[-0.035em]">
+          <h1 className="mt-5 max-w-[16ch] font-display text-[clamp(1.9rem,3.3vw,3.2rem)] font-light leading-[1.06] tracking-[-0.035em]">
             <span className="block text-gradient">
               <SplitWords text="Helping Businesses" delay={0.25} />
             </span>
@@ -109,7 +109,7 @@ export default function Hero({ onDemo }: { onDemo: () => void }) {
             initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ duration: 1.1, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-6 max-w-md text-[14.5px] leading-relaxed text-white/55"
+            className="mt-5 max-w-md text-[13.5px] leading-relaxed text-white/55"
           >
             {PROFILE.intro}
           </motion.p>
@@ -118,7 +118,7 @@ export default function Hero({ onDemo }: { onDemo: () => void }) {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 1 }}
-            className="mt-8 flex flex-wrap items-center gap-3"
+            className="mt-6 flex flex-wrap items-center gap-2.5"
           >
             <Button
               onClick={onDemo}
@@ -149,7 +149,7 @@ export default function Hero({ onDemo }: { onDemo: () => void }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1.2, delay: 1.25 }}
-            className="mt-9 grid max-w-md grid-cols-3 gap-4 border-t border-white/[0.07] pt-5"
+            className="mt-7 grid max-w-md grid-cols-3 gap-4 border-t border-white/[0.07] pt-4"
           >
             {[
               ["20+", "Years in business ops"],
