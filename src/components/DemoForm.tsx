@@ -1,8 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { PROFILE, PROJECTS } from "../lib/data";
-import { sendDemoRequest } from "../lib/contact.functions";
 import { lockScroll } from "../lib/smooth";
 import Button from "./ui/PremiumButton";
 
@@ -33,7 +31,6 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inFlight = useRef(false);
-  const send = useServerFn(sendDemoRequest);
   const [form, setForm] = useState({
     name: "",
     company: "",
@@ -55,25 +52,29 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
     setSending(true);
     setError(null);
     try {
-      const res = await send({ data: form });
-      if (res?.ok) {
-        setSent(true);
-        setForm({
-          name: "",
-          company: "",
-          email: "",
-          phone: "",
-          country: "",
-          subject: "",
-          system: SYSTEMS[0],
-          message: "",
-        });
-        onSent?.();
-      } else {
-        setError(res?.error ?? "Something went wrong. Please try again.");
-      }
+      const body = [
+        `Full Name: ${form.name}`,
+        `Company: ${form.company}`,
+        `Email: ${form.email}`,
+        `Phone: ${form.phone}`,
+        `Country: ${form.country}`,
+        `Subject: ${form.subject}`,
+        `System of interest: ${form.system}`,
+        "",
+        "Message:",
+        form.message,
+      ].join("\r\n");
+
+      const href =
+        `mailto:${PROFILE.email}` +
+        `?subject=${encodeURIComponent("Request for Software Demo")}` +
+        `&body=${encodeURIComponent(body)}`;
+
+      window.location.href = href;
+      setSent(true);
+      onSent?.();
     } catch {
-      setError("Network error. Please try again.");
+      setError("Could not open your mail app. Please email " + PROFILE.email + " directly.");
     } finally {
       setSending(false);
       inFlight.current = false;
