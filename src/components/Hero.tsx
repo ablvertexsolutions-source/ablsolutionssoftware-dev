@@ -69,7 +69,7 @@ export default function Hero({ onDemo }: { onDemo: () => void }) {
     <section
       ref={ref}
       id="hero"
-      className="relative flex min-h-[100svh] items-center overflow-hidden px-5 pb-24 pt-32 sm:px-8 lg:pt-28"
+      className="relative flex min-h-[100svh] items-center overflow-hidden px-5 pb-16 pt-28 sm:px-8 lg:pb-20 lg:pt-24"
     >
       <motion.div
         style={{ scale, opacity, filter, y }}
@@ -91,7 +91,7 @@ export default function Hero({ onDemo }: { onDemo: () => void }) {
             </span>
           </motion.div>
 
-          <h1 className="mt-7 font-display text-[clamp(2.6rem,7.2vw,5.1rem)] font-light leading-[0.94] tracking-[-0.035em]">
+          <h1 className="mt-5 font-display text-[clamp(2.1rem,4.4vw,3.9rem)] font-light leading-[1.02] tracking-[-0.035em]">
             <span className="block text-gradient">
               <SplitWords text="Helping Businesses" delay={0.25} />
             </span>
@@ -109,7 +109,7 @@ export default function Hero({ onDemo }: { onDemo: () => void }) {
             initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ duration: 1.1, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-8 max-w-md text-[15px] leading-relaxed text-white/55"
+            className="mt-6 max-w-md text-[14.5px] leading-relaxed text-white/55"
           >
             {PROFILE.intro}
           </motion.p>
@@ -118,7 +118,7 @@ export default function Hero({ onDemo }: { onDemo: () => void }) {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 1 }}
-            className="mt-10 flex flex-wrap items-center gap-3"
+            className="mt-8 flex flex-wrap items-center gap-3"
           >
             <Button
               onClick={onDemo}
@@ -149,7 +149,7 @@ export default function Hero({ onDemo }: { onDemo: () => void }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1.2, delay: 1.25 }}
-            className="mt-12 grid max-w-md grid-cols-3 gap-4 border-t border-white/[0.07] pt-6"
+            className="mt-9 grid max-w-md grid-cols-3 gap-4 border-t border-white/[0.07] pt-5"
           >
             {[
               ["20+", "Years in business ops"],
