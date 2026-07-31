@@ -8,16 +8,27 @@ import { SCREENS } from "./devices/Screens";
 
 const FRAMES = { macbook: MacBook, monitor: Monitor, tablet: Tablet, iphone: IPhone };
 
+/** Real product screenshot rendered inside a device mockup. */
+function Shot({ src, alt }: { src: string; alt: string }) {
+  return (
+    <img
+      src={src}
+      alt={alt}
+      loading="lazy"
+      decoding="async"
+      className="h-full w-full object-cover"
+    />
+  );
+}
+
 function ProjectScene({
   project,
   index,
   onWatch,
-  onDemo,
 }: {
   project: Project;
   index: number;
   onWatch: (p: Project) => void;
-  onDemo: () => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
@@ -28,7 +39,10 @@ function ProjectScene({
 
   const flipped = index % 2 === 1;
   const Frame = FRAMES[project.device];
-  const Screen = SCREENS[project.id];
+  const Fallback = SCREENS[project.id];
+  const Screen = project.screenshot
+    ? () => <Shot src={project.screenshot!} alt={`${project.name} dashboard`} />
+    : Fallback;
   const isPhone = project.device === "iphone";
 
   return (
@@ -88,11 +102,11 @@ function ProjectScene({
             </p>
           </Reveal>
 
-          <Reveal delay={0.18}>
-            <p className="mt-6 max-w-lg text-[14.5px] leading-relaxed text-white/45">
-              {project.description}
-            </p>
-          </Reveal>
+          {project.description.split("\n\n").map((para, i) => (
+            <Reveal key={i} delay={0.18 + i * 0.06}>
+              <p className="mt-5 max-w-lg text-[14.5px] leading-relaxed text-white/45">{para}</p>
+            </Reveal>
+          ))}
 
           {/* stack */}
           <div className="mt-8 flex flex-wrap gap-2">
@@ -109,9 +123,9 @@ function ProjectScene({
           </div>
 
           {/* features */}
-          <ul className="mt-8 space-y-3">
+          <ul className="mt-8 grid gap-3 sm:grid-cols-2">
             {project.features.map((f, i) => (
-              <Reveal key={f} delay={0.3 + i * 0.08} y={22} blur={7}>
+              <Reveal key={f} delay={0.3 + Math.min(i, 8) * 0.05} y={22} blur={7}>
                 <li className="flex items-start gap-3 text-[13.5px] leading-relaxed text-white/55">
                   <span
                     className="mt-[7px] h-[6px] w-[6px] shrink-0 rounded-full"
@@ -143,9 +157,6 @@ function ProjectScene({
             <div className="mt-10 flex flex-wrap gap-3">
               <Button onClick={() => onWatch(project)} cursorLabel="Play">
                 Watch Demo Video
-              </Button>
-              <Button variant="outline" onClick={onDemo}>
-                Request a Demo
               </Button>
             </div>
           </Reveal>
@@ -251,7 +262,7 @@ export default function Projects({
       </div>
 
       {PROJECTS.map((p, i) => (
-        <ProjectScene key={p.id} project={p} index={i} onWatch={onWatch} onDemo={onDemo} />
+        <ProjectScene key={p.id} project={p} index={i} onWatch={onWatch} />
       ))}
     </section>
   );

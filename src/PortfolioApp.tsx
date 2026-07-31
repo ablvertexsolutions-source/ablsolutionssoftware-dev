@@ -6,6 +6,7 @@ import Contact, { Footer } from "./components/Contact";
 import Cursor from "./components/Cursor";
 import { DemoModal } from "./components/DemoForm";
 import Hero from "./components/Hero";
+import Intro, { shouldPlayIntro } from "./components/Intro";
 import Nav from "./components/Nav";
 import Preloader from "./components/Preloader";
 import Projects from "./components/Projects";
@@ -19,11 +20,17 @@ const Background = lazy(() => import("./three/Background"));
 
 export default function App() {
   const [loaded, setLoaded] = useState(false);
+  const [intro, setIntro] = useState(false);
   const [demoOpen, setDemoOpen] = useState(false);
   const [video, setVideo] = useState<Project | null>(null);
   const [sceneReady, setSceneReady] = useState(false);
 
   useSmoothScroll();
+
+  // cinematic landing intro — desktop only, once per visitor
+  useEffect(() => {
+    if (shouldPlayIntro()) setIntro(true);
+  }, []);
 
   const handleLoaded = useCallback(() => setLoaded(true), []);
   const openDemo = useCallback(() => setDemoOpen(true), []);
@@ -47,6 +54,7 @@ export default function App() {
 
   return (
     <PointerProvider>
+      {intro && <Intro onDone={() => setIntro(false)} />}
       <Preloader onDone={handleLoaded} />
       <Cursor />
 
