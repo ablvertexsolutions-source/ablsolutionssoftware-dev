@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 
 const KEY = "abl-vertex-intro-seen";
@@ -21,7 +21,6 @@ export function shouldPlayIntro() {
  * Scene 3: smoke clears onto chrome "ABL VERTEX", then dissolves into particles.
  */
 export default function Intro({ onDone }: { onDone: () => void }) {
-  const reduced = useReducedMotion();
   const [open, setOpen] = useState(true);
 
   const finish = () => {
@@ -35,10 +34,13 @@ export default function Intro({ onDone }: { onDone: () => void }) {
   };
 
   useEffect(() => {
-    const t = setTimeout(finish, reduced ? 900 : 4900);
+    const reduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const t = setTimeout(finish, reduced ? 1200 : 4900);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reduced]);
+  }, []);
 
   const sparks = useMemo(
     () =>
