@@ -14,7 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      admin_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          value: string | null
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value?: string | null
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: string | null
+        }
+        Relationships: []
+      }
+      demo_requests: {
+        Row: {
+          company: string | null
+          country: string | null
+          created_at: string
+          full_name: string
+          id: string
+          message: string | null
+          notes: string | null
+          phone: string | null
+          status: string
+          subject: string | null
+          system_interest: string | null
+          updated_at: string
+          work_email: string
+        }
+        Insert: {
+          company?: string | null
+          country?: string | null
+          created_at?: string
+          full_name: string
+          id?: string
+          message?: string | null
+          notes?: string | null
+          phone?: string | null
+          status?: string
+          subject?: string | null
+          system_interest?: string | null
+          updated_at?: string
+          work_email: string
+        }
+        Update: {
+          company?: string | null
+          country?: string | null
+          created_at?: string
+          full_name?: string
+          id?: string
+          message?: string | null
+          notes?: string | null
+          phone?: string | null
+          status?: string
+          subject?: string | null
+          system_interest?: string | null
+          updated_at?: string
+          work_email?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
