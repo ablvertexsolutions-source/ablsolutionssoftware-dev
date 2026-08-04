@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { PROFILE, PROJECTS } from "../lib/data";
+import { PROJECTS } from "../lib/data";
+import { submitDemoRequest } from "../lib/demo.functions";
 import { lockScroll } from "../lib/smooth";
 import Button from "./ui/PremiumButton";
 
@@ -52,29 +53,22 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
     setSending(true);
     setError(null);
     try {
-      const body = [
-        `Full Name: ${form.name}`,
-        `Company: ${form.company}`,
-        `Email: ${form.email}`,
-        `Phone: ${form.phone}`,
-        `Country: ${form.country}`,
-        `Subject: ${form.subject}`,
-        `System of interest: ${form.system}`,
-        "",
-        "Message:",
-        form.message,
-      ].join("\r\n");
-
-      const href =
-        `mailto:${PROFILE.email}` +
-        `?subject=${encodeURIComponent("Request for Software Demo")}` +
-        `&body=${encodeURIComponent(body)}`;
-
-      window.location.href = href;
+      await submitDemoRequest({
+        data: {
+          full_name: form.name,
+          work_email: form.email,
+          company: form.company,
+          phone: form.phone,
+          country: form.country,
+          subject: form.subject,
+          system_interest: form.system,
+          message: form.message,
+        },
+      });
       setSent(true);
       onSent?.();
     } catch {
-      setError("Could not open your mail app. Please email " + PROFILE.email + " directly.");
+      setError("We could not submit your request. Please check your details and try again.");
     } finally {
       setSending(false);
       inFlight.current = false;
@@ -183,7 +177,7 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
                 }`}
                 role={error ? "alert" : undefined}
               >
-                {error ?? `Your request is delivered straight to ${PROFILE.email}.`}
+                {error ?? "All fields are required."}
               </p>
               <div className={sending ? "pointer-events-none opacity-60" : ""}>
                 <Button
@@ -200,7 +194,7 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
                     ) : undefined
                   }
                 >
-                  {sending ? "Opening…" : "Send Demo Request"}
+                  {sending ? "Sending…" : "Send Demo Request"}
                 </Button>
               </div>
             </div>
@@ -223,11 +217,10 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
               </svg>
             </motion.span>
             <p className="font-display text-xl font-light tracking-tight text-white">
-              Your mail app is opening with the request ready to send.
+              Demo request received successfully.
             </p>
             <p className="mx-auto mt-3 max-w-sm text-[13px] leading-relaxed text-white/45">
-              Just hit send — it goes straight to {PROFILE.email}, and I reply personally within one
-              business day.
+              Thank you. Your request has been received and will be reviewed shortly.
             </p>
           </motion.div>
         )}
@@ -302,7 +295,7 @@ export function DemoModal({ open, onClose }: { open: boolean; onClose: () => voi
               </button>
             </div>
             <div className="relative mt-8">
-              <DemoForm onSent={() => setTimeout(onClose, 900)} />
+              <DemoForm onSent={() => setTimeout(onClose, 1800)} />
             </div>
           </motion.div>
         </motion.div>

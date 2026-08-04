@@ -37,7 +37,6 @@ function Landing() {
 
   return (
     <main className="min-h-screen bg-[#04070f]">
-      <h1 className="sr-only">ABL Vertex — Business Systems. Software Solutions. Intelligent Automation.</h1>
       {mounted && !splashDone && <Splash image={image} onDone={() => setSplashDone(true)} />}
       {splashDone && (
         <Welcome

@@ -78,7 +78,7 @@ export default function Splash({
           ))}
 
           <div className="absolute inset-0 grid place-items-center px-6">
-            <motion.h1
+            <motion.div
               initial={{ opacity: 0, letterSpacing: "0.6em", filter: "blur(14px)" }}
               animate={{ opacity: 1, letterSpacing: "0.3em", filter: "blur(0px)" }}
               transition={{ duration: 2, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
@@ -91,7 +91,7 @@ export default function Splash({
               }}
             >
               ABL VERTEX
-            </motion.h1>
+            </motion.div>
           </div>
 
           <motion.div
