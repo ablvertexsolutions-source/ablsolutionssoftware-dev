@@ -110,7 +110,7 @@ export const updateRequest = createServerFn({ method: "POST" })
     const { requireAdmin } = await import("./admin.server");
     await requireAdmin();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const patch: Record<string, string> = {};
+    const patch: { status?: string; notes?: string } = {};
     if (data.status) patch.status = data.status;
     if (data.notes !== undefined) patch.notes = data.notes;
     const { error } = await supabaseAdmin.from("demo_requests").update(patch).eq("id", data.id);
