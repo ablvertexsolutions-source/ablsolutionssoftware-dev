@@ -1,11 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import Splash from "../components/Splash";
+import Welcome from "../components/Welcome";
+import { getSplashImage } from "../lib/demo.functions";
 
-const PortfolioApp = lazy(() => import("../PortfolioApp"));
-
-const TITLE = "Adrian Llano — AI Business Systems Engineer";
+const TITLE = "ABL Vertex — Business Systems, Software & Intelligent Automation";
 const DESCRIPTION =
-  "20+ years of business operations fused with modern AI software engineering — payroll, hospitality, fleet and accounting systems built to pay for themselves.";
+  "ABL Vertex builds custom business systems: payroll, hospitality, fleet and accounting software with intelligent automation.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -18,20 +19,32 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Index,
+  component: Landing,
 });
 
-function Index() {
+function Landing() {
+  const navigate = useNavigate();
+  const [splashDone, setSplashDone] = useState(false);
+  const [image, setImage] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    setMounted(true);
+    getSplashImage()
+      .then((r) => setImage(r.url))
+      .catch(() => setImage(null));
+  }, []);
 
   return (
-    <div className="min-h-screen bg-[#04070f]">
-      {mounted && (
-        <Suspense fallback={null}>
-          <PortfolioApp />
-        </Suspense>
+    <main className="min-h-screen bg-[#04070f]">
+      <h1 className="sr-only">ABL Vertex — Business Systems. Software Solutions. Intelligent Automation.</h1>
+      {mounted && !splashDone && <Splash image={image} onDone={() => setSplashDone(true)} />}
+      {splashDone && (
+        <Welcome
+          onVisit={() => navigate({ to: "/site" })}
+          onAdmin={() => navigate({ to: "/admin" })}
+        />
       )}
-    </div>
+    </main>
   );
 }

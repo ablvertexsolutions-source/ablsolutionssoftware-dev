@@ -3,11 +3,11 @@ import { lazy, Suspense, useEffect, useState } from "react";
 
 const PortfolioApp = lazy(() => import("../PortfolioApp"));
 
-const TITLE = "Adrian Llano — AI Business Systems Engineer";
+const TITLE = "Adrian Llano — AI Business Systems Engineer | ABL Vertex";
 const DESCRIPTION =
   "20+ years of business operations fused with modern AI software engineering — payroll, hospitality, fleet and accounting systems built to pay for themselves.";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/site")({
   head: () => ({
     meta: [
       { title: TITLE },
@@ -18,10 +18,10 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Index,
+  component: SitePage,
 });
 
-function Index() {
+function SitePage() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
