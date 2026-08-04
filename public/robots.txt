@@ -12,6 +12,4 @@ Allow: /
 
 User-agent: *
 Allow: /
-
-User-agent: *
 Disallow: /admin
