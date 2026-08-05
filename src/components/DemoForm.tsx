@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { PROJECTS } from "../lib/data";
+import { COUNTRIES, dialFor } from "../lib/countries";
 import { submitDemoRequest } from "../lib/demo.functions";
 import { lockScroll } from "../lib/smooth";
 import Button from "./ui/PremiumButton";
@@ -46,6 +47,17 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
   const set = (k: keyof typeof form) => (e: { target: { value: string } }) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
+  const setCountry = (e: { target: { value: string } }) => {
+    const country = e.target.value;
+    const dial = dialFor(country);
+    setForm((f) => {
+      const prevDial = dialFor(f.country);
+      const rest =
+        prevDial && f.phone.startsWith(prevDial) ? f.phone.slice(prevDial.length).trim() : f.phone.trim();
+      return { ...f, country, phone: dial ? `${dial} ${rest}`.trim() : rest };
+    });
+  };
+
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     if (inFlight.current) return;
@@ -67,8 +79,12 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
       });
       setSent(true);
       onSent?.();
-    } catch {
-      setError("We could not submit your request. Please check your details and try again.");
+    } catch (err) {
+      setError(
+        err instanceof Error && err.message
+          ? err.message
+          : "We could not submit your request. Please try again.",
+      );
     } finally {
       setSending(false);
       inFlight.current = false;
@@ -130,13 +146,16 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Country">
-                <input
-                  required
-                  value={form.country}
-                  onChange={set("country")}
-                  placeholder="United States"
-                  className={inputCls}
-                />
+                <select required value={form.country} onChange={setCountry} className={inputCls}>
+                  <option value="" className="bg-[#0b1222]">
+                    Select country
+                  </option>
+                  {COUNTRIES.map((c) => (
+                    <option key={c.code} value={c.name} className="bg-[#0b1222]">
+                      {c.name} ({c.dial})
+                    </option>
+                  ))}
+                </select>
               </Field>
               <Field label="Subject">
                 <input
