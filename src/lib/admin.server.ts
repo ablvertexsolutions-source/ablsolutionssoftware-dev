@@ -4,6 +4,7 @@ export type AdminSession = { authed?: boolean; at?: number };
 
 const ITER = 100_000;
 export const DEFAULT_PASSWORD = "1111";
+export const ADMIN_USERNAME = "admin";
 
 function sessionConfig() {
   const password = process.env["ADMIN_SESSION_SECRET"];
@@ -12,7 +13,9 @@ function sessionConfig() {
     password,
     name: "abl-admin",
     maxAge: 60 * 60 * 8,
-    cookie: { httpOnly: true, secure: true, sameSite: "lax" as const, path: "/" },
+    // sameSite "none" keeps the admin session alive inside embedded previews
+    // (Lovable preview iframe) as well as on the standalone deployed site.
+    cookie: { httpOnly: true, secure: true, sameSite: "none" as const, path: "/" },
   };
 }
 
