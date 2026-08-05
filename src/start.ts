@@ -23,6 +23,19 @@ const errorMiddleware = createMiddleware().server(async ({ next }) => {
 // from cross-site requests.
 const csrfMiddleware = createCsrfMiddleware({
   filter: (ctx) => ctx.handlerType === "serverFn",
+  // The app is also served inside embedded previews, where the browser reports
+  // "same-site"/"none" for its own same-origin requests.
+  secFetchSite: ["same-origin", "same-site", "none"],
+  origin: (value, ctx) => {
+    try {
+      const requestOrigin = new URL(ctx.request.url).origin;
+      if (value === requestOrigin) return true;
+      const host = new URL(value).hostname;
+      return host.endsWith(".lovable.app") || host.endsWith(".vercel.app");
+    } catch {
+      return false;
+    }
+  },
 });
 
 export const startInstance = createStart(() => ({
