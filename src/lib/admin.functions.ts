@@ -32,21 +32,51 @@ export const adminStatus = createServerFn({ method: "GET" }).handler(async () =>
 });
 
 export const adminLogin = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => z.object({ password: z.string().min(1).max(200) }).parse(d))
-  .handler(async ({ data }) => {
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        username: z.string().trim().max(100).optional().default("admin"),
+        password: z.string().min(1).max(200),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data }): Promise<{ ok: boolean; error?: string }> => {
     const m = await import("./admin.server");
-    const stored = await m.getSetting("password_hash");
-    let ok = false;
-    if (!stored) {
-      ok = data.password === m.DEFAULT_PASSWORD;
-      if (ok) await m.setSetting("password_hash", await m.hashPassword(m.DEFAULT_PASSWORD));
-    } else {
-      ok = await m.verifyPassword(data.password, stored);
+
+    if (data.username.toLowerCase() !== m.ADMIN_USERNAME) {
+      return { ok: false, error: "Invalid username or password." };
     }
-    if (!ok) return { ok: false as const };
-    const session = await m.getAdminSession();
-    await session.update({ authed: true, at: Date.now() });
-    return { ok: true as const };
+
+    let stored: string | null;
+    try {
+      stored = await m.getSetting("password_hash");
+    } catch (e) {
+      console.error("[admin] settings read failed", e);
+      return { ok: false, error: "Database connection failed. Please try again." };
+    }
+
+    try {
+      let ok = false;
+      if (!stored) {
+        // First run: the default password is accepted once and stored hashed.
+        ok = data.password === m.DEFAULT_PASSWORD;
+        if (ok) await m.setSetting("password_hash", await m.hashPassword(m.DEFAULT_PASSWORD));
+      } else {
+        ok = await m.verifyPassword(data.password, stored);
+        // Safety net: the documented default keeps working until it is changed.
+        if (!ok && data.password === m.DEFAULT_PASSWORD) {
+          ok = await m.verifyPassword(m.DEFAULT_PASSWORD, stored);
+        }
+      }
+      if (!ok) return { ok: false, error: "Invalid username or password." };
+
+      const session = await m.getAdminSession();
+      await session.update({ authed: true, at: Date.now() });
+      return { ok: true };
+    } catch (e) {
+      console.error("[admin] login failed", e);
+      return { ok: false, error: "Admin authentication service is unavailable." };
+    }
   });
 
 export const adminLogout = createServerFn({ method: "POST" }).handler(async () => {
