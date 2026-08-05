@@ -23,7 +23,7 @@ export const submitDemoRequest = createServerFn({ method: "POST" })
       .single();
     if (error) {
       console.error("[demo_requests] insert failed", error.message);
-      throw new Error("Could not save your request. Please try again.");
+      throw new Error(`Could not save your request: ${error.message}`);
     }
     return { id: row.id as string, created_at: row.created_at as string };
   });

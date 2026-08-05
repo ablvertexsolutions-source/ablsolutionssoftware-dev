@@ -36,6 +36,7 @@ export default function AdminApp() {
 /* ─────────────────────────── LOGIN ─────────────────────────── */
 
 function Login({ onDone }: { onDone: () => void }) {
+  const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -45,11 +46,15 @@ function Login({ onDone }: { onDone: () => void }) {
     setBusy(true);
     setError(null);
     try {
-      const r = await adminLogin({ data: { password } });
+      const r = await adminLogin({ data: { username, password } });
       if (r.ok) onDone();
-      else setError("Incorrect password.");
-    } catch {
-      setError("Could not sign in. Please try again.");
+      else setError(r.error ?? "Invalid username or password.");
+    } catch (err) {
+      setError(
+        err instanceof Error && err.message
+          ? `Admin authentication service is unavailable (${err.message}).`
+          : "Admin authentication service is unavailable.",
+      );
     } finally {
       setBusy(false);
     }
@@ -79,11 +84,23 @@ function Login({ onDone }: { onDone: () => void }) {
           ABL VERTEX ADMIN
         </h1>
         <div className="mt-8">
+          <Label>Username</Label>
+          <input
+            autoFocus
+            required
+            autoComplete="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className={input}
+            placeholder="admin"
+          />
+        </div>
+        <div className="mt-5">
           <Label>Password</Label>
           <input
             type="password"
-            autoFocus
             required
+            autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className={input}
