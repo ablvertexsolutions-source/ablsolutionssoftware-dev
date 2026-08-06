@@ -9,6 +9,7 @@ const schema = z.object({
   country: z.string().trim().max(120).optional().default(""),
   country_code: z.string().trim().max(10).optional().default(""),
   system_interest: z.string().trim().max(160).optional().default(""),
+  subject: z.string().trim().max(200).optional().default(""),
   message: z.string().trim().min(1).max(4000),
 });
 
