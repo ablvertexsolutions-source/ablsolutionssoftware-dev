@@ -39,7 +39,6 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
     email: "",
     phone: "",
     country: "",
-    subject: "",
     system: SYSTEMS[0],
     message: "",
   });
@@ -72,7 +71,7 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
           company: form.company,
           phone: form.phone,
           country: form.country,
-          subject: form.subject,
+          country_code: dialFor(form.country),
           system_interest: form.system,
           message: form.message,
         },
@@ -157,17 +156,6 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
                   ))}
                 </select>
               </Field>
-              <Field label="Subject">
-                <input
-                  required
-                  value={form.subject}
-                  onChange={set("subject")}
-                  placeholder="Payroll demo for 60 staff"
-                  className={inputCls}
-                />
-              </Field>
-            </div>
-            <div className="grid gap-4">
               <Field label="System of interest">
                 <select value={form.system} onChange={set("system")} className={inputCls}>
                   {SYSTEMS.map((s) => (
@@ -236,10 +224,10 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
               </svg>
             </motion.span>
             <p className="font-display text-xl font-light tracking-tight text-white">
-              Demo request received successfully.
+              Demo Request Received
             </p>
             <p className="mx-auto mt-3 max-w-sm text-[13px] leading-relaxed text-white/45">
-              Thank you. Your request has been received and will be reviewed shortly.
+              Thank you! Your request has been successfully received.
             </p>
           </motion.div>
         )}

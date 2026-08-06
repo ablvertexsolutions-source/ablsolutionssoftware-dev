@@ -7,7 +7,7 @@ const schema = z.object({
   company: z.string().trim().max(160).optional().default(""),
   phone: z.string().trim().max(60).optional().default(""),
   country: z.string().trim().max(120).optional().default(""),
-  subject: z.string().trim().max(200).optional().default(""),
+  country_code: z.string().trim().max(10).optional().default(""),
   system_interest: z.string().trim().max(160).optional().default(""),
   message: z.string().trim().min(1).max(4000),
 });
