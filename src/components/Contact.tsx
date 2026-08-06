@@ -36,37 +36,38 @@ export default function Contact({ onDemo }: { onDemo: () => void }) {
 
           <Reveal delay={0.2}>
             <p className="mt-8 max-w-md text-[15px] leading-relaxed text-white/45">
-              Whether you need payroll that closes itself, a resort running on one calendar, fleet
-              costs under control, or twenty years of ledgers migrated cleanly — start with a demo.
+              I listen to the problems businesses face, identify operational pain points, and turn
+              those challenges into practical software solutions.
+            </p>
+            <p className="mt-4 max-w-md text-[15px] leading-relaxed text-white/45">
+              Tell me what is slowing your business down, what your team is doing manually, or where
+              your current systems are falling short. I’ll help you explore a smarter way to solve
+              it.
             </p>
           </Reveal>
 
-          <div className="mt-10 space-y-5">
-            {[
-              ["Email", PROFILE.email, `mailto:${PROFILE.email}`],
-              ["Availability", PROFILE.location, null],
-              ["Response time", "Within 24 hours", null],
-            ].map(([label, value, href], i) => (
-              <Reveal key={label} delay={0.1 * i}>
-                <div className="border-t border-white/[0.07] pt-4">
-                  <p className="font-display text-[9px] uppercase tracking-[0.3em] text-white/30">
-                    {label}
-                  </p>
-                  {href ? (
-                    <a
-                      href={href}
-                      data-cursor="button"
-                      className="group mt-2 inline-flex items-center gap-2 font-display text-[15px] text-white/85 transition-colors hover:text-cyan-300"
-                    >
-                      {value}
-                      <span className="inline-block transition-transform duration-500 group-hover:translate-x-1">
-                        →
-                      </span>
-                    </a>
-                  ) : (
-                    <p className="mt-2 font-display text-[15px] text-white/70">{value}</p>
-                  )}
-                </div>
+          <div className="mt-10 space-y-3">
+            {CONTACTS.map((c, i) => (
+              <Reveal key={c.label} delay={0.08 * i}>
+                <a
+                  href={c.href}
+                  target={c.href.startsWith("http") ? "_blank" : undefined}
+                  rel="noreferrer"
+                  data-cursor="button"
+                  className="group flex items-center gap-4 rounded-2xl border border-white/[0.07] px-4 py-3 transition-colors hover:border-cyan-300/30"
+                >
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-white/10 text-sky-300/80 transition-colors group-hover:text-cyan-300">
+                    <ContactIcon name={c.icon} />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block font-display text-[9px] uppercase tracking-[0.3em] text-white/30">
+                      {c.label}
+                    </span>
+                    <span className="mt-1 block truncate font-display text-[14px] text-white/85 transition-colors group-hover:text-cyan-300">
+                      {c.value}
+                    </span>
+                  </span>
+                </a>
               </Reveal>
             ))}
           </div>
@@ -77,7 +78,7 @@ export default function Contact({ onDemo }: { onDemo: () => void }) {
                 Download Résumé
               </Button>
               <Button variant="ghost" onClick={onDemo}>
-                Open Demo Form
+                Contact Me
               </Button>
             </div>
           </Reveal>
