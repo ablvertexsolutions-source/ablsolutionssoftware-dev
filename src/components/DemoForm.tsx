@@ -1,7 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { toast } from "sonner";
-import { PROFILE, PROJECTS } from "../lib/data";
+import { PROJECTS } from "../lib/data";
+import { COUNTRIES, dialFor } from "../lib/countries";
+import { submitDemoRequest } from "../lib/demo.functions";
 import { lockScroll } from "../lib/smooth";
 import Button from "./ui/PremiumButton";
 
@@ -38,13 +39,23 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
     email: "",
     phone: "",
     country: "",
-    subject: "",
     system: SYSTEMS[0],
     message: "",
   });
 
   const set = (k: keyof typeof form) => (e: { target: { value: string } }) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
+
+  const setCountry = (e: { target: { value: string } }) => {
+    const country = e.target.value;
+    const dial = dialFor(country);
+    setForm((f) => {
+      const prevDial = dialFor(f.country);
+      const rest =
+        prevDial && f.phone.startsWith(prevDial) ? f.phone.slice(prevDial.length).trim() : f.phone.trim();
+      return { ...f, country, phone: dial ? `${dial} ${rest}`.trim() : rest };
+    });
+  };
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
@@ -53,22 +64,26 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
     setSending(true);
     setError(null);
     try {
-      const response = await fetch("/api/demo-request", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+      await submitDemoRequest({
+        data: {
+          full_name: form.name,
+          work_email: form.email,
+          company: form.company,
+          phone: form.phone,
+          country: form.country,
+          country_code: dialFor(form.country),
+          system_interest: form.system,
+          message: form.message,
+        },
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to send request");
-      }
-
       setSent(true);
-      toast.success("Thank you! Your demo request has been sent successfully. Please check your email for confirmation.");
       onSent?.();
-    } catch {
-      setError("Unable to send your request. Please try again later.");
-      toast.error("Unable to send your request. Please try again later.");
+    } catch (err) {
+      setError(
+        err instanceof Error && err.message
+          ? err.message
+          : "We could not submit your request. Please try again.",
+      );
     } finally {
       setSending(false);
       inFlight.current = false;
@@ -130,25 +145,17 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Country">
-                <input
-                  required
-                  value={form.country}
-                  onChange={set("country")}
-                  placeholder="United States"
-                  className={inputCls}
-                />
+                <select required value={form.country} onChange={setCountry} className={inputCls}>
+                  <option value="" className="bg-[#0b1222]">
+                    Select country
+                  </option>
+                  {COUNTRIES.map((c) => (
+                    <option key={c.code} value={c.name} className="bg-[#0b1222]">
+                      {c.name} ({c.dial})
+                    </option>
+                  ))}
+                </select>
               </Field>
-              <Field label="Subject">
-                <input
-                  required
-                  value={form.subject}
-                  onChange={set("subject")}
-                  placeholder="Payroll demo for 60 staff"
-                  className={inputCls}
-                />
-              </Field>
-            </div>
-            <div className="grid gap-4">
               <Field label="System of interest">
                 <select value={form.system} onChange={set("system")} className={inputCls}>
                   {SYSTEMS.map((s) => (
@@ -177,7 +184,7 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
                 }`}
                 role={error ? "alert" : undefined}
               >
-                {error ?? `Your request is delivered straight to ${PROFILE.email}.`}
+                {error ?? "All fields are required."}
               </p>
               <div className={sending ? "pointer-events-none opacity-60" : ""}>
                 <Button
@@ -194,7 +201,7 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
                     ) : undefined
                   }
                 >
-                  {sending ? "Opening…" : "Send Demo Request"}
+                  {sending ? "Sending…" : "Send Demo Request"}
                 </Button>
               </div>
             </div>
@@ -217,10 +224,10 @@ export function DemoForm({ onSent }: { onSent?: () => void }) {
               </svg>
             </motion.span>
             <p className="font-display text-xl font-light tracking-tight text-white">
-              Request Sent Successfully
+              Demo Request Received
             </p>
             <p className="mx-auto mt-3 max-w-sm text-[13px] leading-relaxed text-white/45">
-              Please check your email for confirmation. I will review your inquiry and contact you within one business day.
+              Thank you! Your request has been successfully received.
             </p>
           </motion.div>
         )}
@@ -295,7 +302,7 @@ export function DemoModal({ open, onClose }: { open: boolean; onClose: () => voi
               </button>
             </div>
             <div className="relative mt-8">
-              <DemoForm onSent={() => setTimeout(onClose, 900)} />
+              <DemoForm onSent={() => setTimeout(onClose, 1800)} />
             </div>
           </motion.div>
         </motion.div>
