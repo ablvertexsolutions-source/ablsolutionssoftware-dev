@@ -7,6 +7,54 @@ import { DemoForm } from "./DemoForm";
 import Button from "./ui/PremiumButton";
 
 export default function Contact({ onDemo }: { onDemo: () => void }) {
+  return <ContactSection onDemo={onDemo} />;
+}
+
+type ContactItem = { label: string; value: string; href: string; icon: "mail" | "phone" | "linkedin" | "facebook" };
+
+const CONTACTS: ContactItem[] = [
+  { label: "Email", value: "adrian.llano79@gmail.com", href: "mailto:adrian.llano79@gmail.com", icon: "mail" },
+  { label: "Phone", value: "+63 912 394 4288", href: "tel:+639123944288", icon: "phone" },
+  {
+    label: "LinkedIn",
+    value: "Adrian Llano",
+    href: "https://www.linkedin.com/in/adrian-llano-0b1862b5/",
+    icon: "linkedin",
+  },
+  { label: "Facebook", value: "ading.weird", href: "https://www.facebook.com/ading.weird", icon: "facebook" },
+];
+
+function ContactIcon({ name }: { name: ContactItem["icon"] }) {
+  const p = { width: 15, height: 15, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.7 };
+  if (name === "mail")
+    return (
+      <svg {...p}>
+        <rect x="2" y="4" width="20" height="16" rx="3" />
+        <path d="m3 7 9 6 9-6" />
+      </svg>
+    );
+  if (name === "phone")
+    return (
+      <svg {...p}>
+        <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.4 2.1L8.1 9.9a16 16 0 0 0 6 6l1.2-1.3a2 2 0 0 1 2.1-.4c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2Z" />
+      </svg>
+    );
+  if (name === "linkedin")
+    return (
+      <svg {...p}>
+        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6Z" />
+        <rect x="2" y="9" width="4" height="12" />
+        <circle cx="4" cy="4" r="2" />
+      </svg>
+    );
+  return (
+    <svg {...p}>
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3Z" />
+    </svg>
+  );
+}
+
+function ContactSection({ onDemo }: { onDemo: () => void }) {
   return (
     <section
       id="contact"
