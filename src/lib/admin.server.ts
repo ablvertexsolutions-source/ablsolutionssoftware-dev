@@ -87,5 +87,11 @@ export async function setSetting(key: string, value: string | null) {
   const { error } = await supabaseAdmin
     .from("admin_settings")
     .upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: "key" });
-  if (error) throw error;
+  if (error) {
+    if (error.code === "PGRST205") {
+      console.warn(`[admin] Table 'admin_settings' does not exist. Cannot save setting '${key}'. Admin login will continue using default credentials.`);
+    } else {
+      throw error;
+    }
+  }
 }
