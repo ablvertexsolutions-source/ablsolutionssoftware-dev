@@ -29,18 +29,18 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
 
 function getSupabaseUrl() {
   return (
-    import.meta.env['VITE_SUPABASE_URL'] ||
-    process.env['SUPABASE_URL'] ||
-    (import.meta.env['VITE_SUPABASE_PROJECT_ID'] && `https://${import.meta.env['VITE_SUPABASE_PROJECT_ID']}.supabase.co`) ||
-    (process.env['SUPABASE_PROJECT_ID'] && `https://${process.env['SUPABASE_PROJECT_ID']}.supabase.co`)
+    import.meta.env.VITE_SUPABASE_URL ||
+    (typeof process !== 'undefined' ? process.env.SUPABASE_URL : undefined) ||
+    (import.meta.env.VITE_SUPABASE_PROJECT_ID && `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co`) ||
+    (typeof process !== 'undefined' && process.env.SUPABASE_PROJECT_ID ? `https://${process.env.SUPABASE_PROJECT_ID}.supabase.co` : undefined)
   );
 }
 
 function getSupabasePublishableKey() {
   return (
-    import.meta.env['VITE_SUPABASE_PUBLISHABLE_KEY'] ||
-    process.env['SUPABASE_PUBLISHABLE_KEY'] ||
-    process.env['SUPABASE_KEY']
+    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+    (typeof process !== 'undefined' ? process.env.SUPABASE_PUBLISHABLE_KEY : undefined) ||
+    (typeof process !== 'undefined' ? process.env.SUPABASE_KEY : undefined)
   );
 }
 

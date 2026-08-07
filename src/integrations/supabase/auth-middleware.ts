@@ -34,14 +34,17 @@ export const requireSupabaseAuth = createMiddleware({ type: 'function' }).server
   async ({ next }) => {
     
     const SUPABASE_URL =
-      process.env['SUPABASE_URL'] ||
-      process.env['VITE_SUPABASE_URL'] ||
-      (process.env['SUPABASE_PROJECT_ID'] && `https://${process.env['SUPABASE_PROJECT_ID']}.supabase.co`) ||
-      (process.env['VITE_SUPABASE_PROJECT_ID'] && `https://${process.env['VITE_SUPABASE_PROJECT_ID']}.supabase.co`);
+      (typeof process !== 'undefined' ? process.env.SUPABASE_URL : undefined) ||
+      (typeof process !== 'undefined' ? process.env.VITE_SUPABASE_URL : undefined) ||
+      import.meta.env.VITE_SUPABASE_URL ||
+      (typeof process !== 'undefined' && process.env.SUPABASE_PROJECT_ID ? `https://${process.env.SUPABASE_PROJECT_ID}.supabase.co` : undefined) ||
+      (import.meta.env.VITE_SUPABASE_PROJECT_ID && `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co`);
+    
     const SUPABASE_PUBLISHABLE_KEY =
-      process.env['SUPABASE_PUBLISHABLE_KEY'] ||
-      process.env['VITE_SUPABASE_PUBLISHABLE_KEY'] ||
-      process.env['SUPABASE_KEY'];
+      (typeof process !== 'undefined' ? process.env.SUPABASE_PUBLISHABLE_KEY : undefined) ||
+      (typeof process !== 'undefined' ? process.env.VITE_SUPABASE_PUBLISHABLE_KEY : undefined) ||
+      import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+      (typeof process !== 'undefined' ? process.env.SUPABASE_KEY : undefined);
 
     if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
       const missing = [
