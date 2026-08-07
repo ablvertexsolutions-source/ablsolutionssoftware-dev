@@ -31,16 +31,15 @@ export const submitDemoRequest = createServerFn({ method: "POST" })
       status: "New",
     };
     
-    const { data: row, error } = await supabaseAdmin
+    const { error } = await supabaseAdmin
       .from("demo_requests")
-      .insert(payload)
-      .select("id, created_at")
-      .single();
+      .insert(payload);
+
     if (error) {
       console.error("[demo_requests] insert failed", error.code, error.message, error.details, error.hint);
       throw new Error(`Database Error: ${error.message} (Code: ${error.code})`);
     }
-    return { id: row.id as string, created_at: row.created_at as string };
+    return { ok: true };
   });
 
 export const getSplashImage = createServerFn({ method: "GET" }).handler(async () => {
