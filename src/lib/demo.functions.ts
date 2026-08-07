@@ -20,13 +20,15 @@ export const submitDemoRequest = createServerFn({ method: "POST" })
     await ensureTables();
     const payload = {
       full_name: data.full_name,
-      company: data.company,
       work_email: data.work_email,
+      company: data.company,
       phone: data.phone,
       country: data.country,
+      country_code: data.country_code,
+      subject: data.subject,
       system_interest: data.system_interest,
       message: data.message,
-      status: "NEW",
+      status: "New",
     };
     
     const { data: row, error } = await supabaseAdmin
