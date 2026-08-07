@@ -11,6 +11,8 @@ const schema = z.object({
   system_interest: z.string().trim().max(160).optional().default(""),
   subject: z.string().trim().max(200).optional().default(""),
   message: z.string().trim().min(1).max(4000),
+});
+
 export const submitDemoRequest = createServerFn({ method: "POST" })
   .validator((data: unknown) => schema.parse(data))
   .handler(async ({ data }) => {
