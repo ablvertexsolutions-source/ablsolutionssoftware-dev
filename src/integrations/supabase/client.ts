@@ -26,7 +26,6 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
   };
 }
 
-
 function getSupabaseUrl() {
   return (
     import.meta.env.VITE_SUPABASE_URL ||
@@ -34,7 +33,8 @@ function getSupabaseUrl() {
     (typeof process !== 'undefined' ? process.env.VITE_SUPABASE_URL : undefined) ||
     (import.meta.env.VITE_SUPABASE_PROJECT_ID && `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co`) ||
     (typeof process !== 'undefined' && process.env.SUPABASE_PROJECT_ID ? `https://${process.env.SUPABASE_PROJECT_ID}.supabase.co` : undefined) ||
-    (typeof process !== 'undefined' && process.env.VITE_SUPABASE_PROJECT_ID ? `https://${process.env.VITE_SUPABASE_PROJECT_ID}.supabase.co` : undefined)
+    (typeof process !== 'undefined' && process.env.VITE_SUPABASE_PROJECT_ID ? `https://${process.env.VITE_SUPABASE_PROJECT_ID}.supabase.co` : undefined) ||
+    'https://jupbwlxoelkskbqhiyol.supabase.co'
   );
 }
 
@@ -46,13 +46,12 @@ function getSupabasePublishableKey() {
     (typeof process !== 'undefined' ? process.env.VITE_SUPABASE_PUBLISHABLE_KEY : undefined) ||
     (typeof process !== 'undefined' ? process.env.SUPABASE_ANON_KEY : undefined) ||
     (typeof process !== 'undefined' ? process.env.VITE_SUPABASE_ANON_KEY : undefined) ||
-    (typeof process !== 'undefined' ? process.env.SUPABASE_KEY : undefined)
+    (typeof process !== 'undefined' ? process.env.SUPABASE_KEY : undefined) ||
+    'sb_publishable_YfIAnkE91sQEIlWvbQ9rLg_nnGeftVP'
   );
 }
 
 function createSupabaseClient() {
-  // Use import.meta.env for client-side (Vite build-time replacement)
-  // Fall back to process.env for SSR (server-side rendering)
   const SUPABASE_URL = getSupabaseUrl();
   const SUPABASE_PUBLISHABLE_KEY = getSupabasePublishableKey();
 
@@ -80,12 +79,9 @@ function createSupabaseClient() {
 
 let _supabase: ReturnType<typeof createSupabaseClient> | undefined;
 
-// Import the supabase client like this:
-// import { supabase } from "@/integrations/supabase/client";
 export const supabase = new Proxy({} as ReturnType<typeof createSupabaseClient>, {
   get(_, prop, receiver) {
     if (!_supabase) _supabase = createSupabaseClient();
     return Reflect.get(_supabase, prop, receiver);
   },
 });
-

@@ -4,8 +4,6 @@ import { getRequest } from '@tanstack/react-start/server'
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from './types'
 
-
-
 function isNewSupabaseApiKey(value: string): boolean {
   return value.startsWith('sb_publishable_') || value.startsWith('sb_secret_');
 }
@@ -20,7 +18,6 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
       new Headers(init.headers).forEach((value, key) => headers.set(key, value));
     }
 
-    // New Supabase API keys are opaque strings, not bearer JWTs.
     if (isNewSupabaseApiKey(supabaseKey) && headers.get('Authorization') === `Bearer ${supabaseKey}`) {
       headers.delete('Authorization');
     }
@@ -32,13 +29,13 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
 
 export const requireSupabaseAuth = createMiddleware({ type: 'function' }).server(
   async ({ next }) => {
-    
     const SUPABASE_URL =
       (typeof process !== 'undefined' ? process.env.SUPABASE_URL : undefined) ||
       (typeof process !== 'undefined' ? process.env.VITE_SUPABASE_URL : undefined) ||
       import.meta.env.VITE_SUPABASE_URL ||
       (typeof process !== 'undefined' && process.env.SUPABASE_PROJECT_ID ? `https://${process.env.SUPABASE_PROJECT_ID}.supabase.co` : undefined) ||
-      (import.meta.env.VITE_SUPABASE_PROJECT_ID && `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co`);
+      (import.meta.env.VITE_SUPABASE_PROJECT_ID && `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co`) ||
+      'https://jupbwlxoelkskbqhiyol.supabase.co';
     
     const SUPABASE_PUBLISHABLE_KEY =
       (typeof process !== 'undefined' ? process.env.SUPABASE_PUBLISHABLE_KEY : undefined) ||
@@ -47,7 +44,8 @@ export const requireSupabaseAuth = createMiddleware({ type: 'function' }).server
       (typeof process !== 'undefined' ? process.env.SUPABASE_ANON_KEY : undefined) ||
       (typeof process !== 'undefined' ? process.env.VITE_SUPABASE_ANON_KEY : undefined) ||
       import.meta.env.VITE_SUPABASE_ANON_KEY ||
-      (typeof process !== 'undefined' ? process.env.SUPABASE_KEY : undefined);
+      (typeof process !== 'undefined' ? process.env.SUPABASE_KEY : undefined) ||
+      'sb_publishable_YfIAnkE91sQEIlWvbQ9rLg_nnGeftVP';
 
     if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
       const missing = [

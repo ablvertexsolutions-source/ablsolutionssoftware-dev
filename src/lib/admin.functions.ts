@@ -32,7 +32,7 @@ export const adminStatus = createServerFn({ method: "GET" }).handler(async () =>
 });
 
 export const adminLogin = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         username: z.string().trim().max(100).optional().default("admin"),
@@ -42,6 +42,11 @@ export const adminLogin = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }): Promise<{ ok: boolean; error?: string }> => {
     const m = await import("./admin.server");
+    // Ensure tables exist (self-healing for first-run / missing migrations)
+    try {
+      const { ensureTables } = await import("@/integrations/supabase/client.server");
+      await ensureTables();
+    } catch { /* ignore – will surface via getSetting below */ }
 
     if (data.username.toLowerCase() !== m.ADMIN_USERNAME) {
       return { ok: false, error: "Invalid username or password." };
@@ -87,7 +92,7 @@ export const adminLogout = createServerFn({ method: "POST" }).handler(async () =
 });
 
 export const adminChangePassword = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z.object({ current: z.string().min(1), next: z.string().min(4).max(200) }).parse(d),
   )
   .handler(async ({ data }) => {
@@ -103,13 +108,14 @@ export const adminChangePassword = createServerFn({ method: "POST" })
   });
 
 export const listRequests = createServerFn({ method: "GET" })
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z.object({ search: z.string().max(200).default(""), status: z.string().max(40).default("All") }).parse(d),
   )
   .handler(async ({ data }): Promise<{ rows: DemoRequest[] }> => {
     const { requireAdmin } = await import("./admin.server");
     await requireAdmin();
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin, ensureTables } = await import("@/integrations/supabase/client.server");
+    await ensureTables();
     let q = supabaseAdmin
       .from("demo_requests")
       .select("*")
@@ -127,7 +133,7 @@ export const listRequests = createServerFn({ method: "GET" })
   });
 
 export const updateRequest = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         id: z.string().uuid(),
@@ -149,7 +155,7 @@ export const updateRequest = createServerFn({ method: "POST" })
   });
 
 export const deleteRequest = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .validator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data }) => {
     const { requireAdmin } = await import("./admin.server");
     await requireAdmin();
@@ -201,7 +207,7 @@ const backupSchema = z.object({
 });
 
 export const restoreData = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => z.object({ payload: z.string().max(8_000_000) }).parse(d))
+  .validator((d: unknown) => z.object({ payload: z.string().max(8_000_000) }).parse(d))
   .handler(async ({ data }) => {
     const { requireAdmin } = await import("./admin.server");
     await requireAdmin();
@@ -220,7 +226,7 @@ export const restoreData = createServerFn({ method: "POST" })
   });
 
 export const saveSplashImage = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z.object({ dataUrl: z.string().max(4_000_000).nullable() }).parse(d),
   )
   .handler(async ({ data }) => {

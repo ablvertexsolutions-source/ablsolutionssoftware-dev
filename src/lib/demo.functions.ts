@@ -14,17 +14,18 @@ const schema = z.object({
 });
 
 export const submitDemoRequest = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => schema.parse(data))
+  .validator((data: unknown) => schema.parse(data))
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin, ensureTables } = await import("@/integrations/supabase/client.server");
+    await ensureTables();
     const { data: row, error } = await supabaseAdmin
       .from("demo_requests")
       .insert({ ...data, status: "NEW" })
       .select("id, created_at")
       .single();
     if (error) {
-      console.error("[demo_requests] insert failed", error.message);
-      throw new Error(`Could not save your request: ${error.message}`);
+      console.error("[demo_requests] insert failed", error.code, error.message);
+      throw new Error(`Could not save your request. Please try again.`);
     }
     return { id: row.id as string, created_at: row.created_at as string };
   });
