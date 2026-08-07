@@ -280,7 +280,7 @@ function Dashboard({
   onOpen: (r: DemoRequest) => void;
   onSeeAll: () => void;
 }) {
-  const count = (s: string) => rows.filter((r) => r.status === s).length;
+  const count = (s: string) => rows.filter((r) => r.status.toUpperCase() === s.toUpperCase()).length;
   const cards = [
     { label: "Total Requests", value: rows.length },
     { label: "New Requests", value: count("NEW") },

@@ -121,7 +121,7 @@ export const listRequests = createServerFn({ method: "GET" })
       .select("*")
       .order("created_at", { ascending: false })
       .limit(500);
-    if (data.status && data.status !== "All") q = q.eq("status", data.status);
+    if (data.status && data.status !== "All") q = q.ilike("status", data.status);
     const term = data.search.trim().replace(/[%,()]/g, "");
     if (term) {
       const cols = ["full_name", "company", "work_email", "phone", "country", "subject", "system_interest"];
