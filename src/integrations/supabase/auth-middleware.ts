@@ -44,6 +44,9 @@ export const requireSupabaseAuth = createMiddleware({ type: 'function' }).server
       (typeof process !== 'undefined' ? process.env.SUPABASE_PUBLISHABLE_KEY : undefined) ||
       (typeof process !== 'undefined' ? process.env.VITE_SUPABASE_PUBLISHABLE_KEY : undefined) ||
       import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+      (typeof process !== 'undefined' ? process.env.SUPABASE_ANON_KEY : undefined) ||
+      (typeof process !== 'undefined' ? process.env.VITE_SUPABASE_ANON_KEY : undefined) ||
+      import.meta.env.VITE_SUPABASE_ANON_KEY ||
       (typeof process !== 'undefined' ? process.env.SUPABASE_KEY : undefined);
 
     if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
