@@ -27,33 +27,14 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
 }
 
 function createSupabaseAdminClient() {
-  const SUPABASE_URL = 
-    (typeof process !== 'undefined' ? process.env['SUPABASE_URL'] : undefined) || 
-    (typeof process !== 'undefined' ? process.env['VITE_SUPABASE_URL'] : undefined) ||
-    import.meta.env.VITE_SUPABASE_URL ||
-    (typeof process !== 'undefined' && process.env['SUPABASE_PROJECT_ID'] ? `https://${process.env['SUPABASE_PROJECT_ID']}.supabase.co` : undefined) ||
-    (typeof process !== 'undefined' && process.env['VITE_SUPABASE_PROJECT_ID'] ? `https://${process.env['VITE_SUPABASE_PROJECT_ID']}.supabase.co` : undefined) ||
-    (import.meta.env.VITE_SUPABASE_PROJECT_ID && `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co`) ||
-    'https://jupbwlxoelkskbqhiyol.supabase.co';
+  const SUPABASE_URL = process.env['SUPABASE_URL'];
 
-  const SUPABASE_SERVICE_ROLE_KEY =
-    (typeof process !== 'undefined' ? process.env['SUPABASE_SERVICE_ROLE_KEY'] : undefined) ||
-    (typeof process !== 'undefined' ? process.env['SUPABASE_SECRET_KEY'] : undefined) ||
-    (typeof process !== 'undefined' ? process.env['SUPABASE_SERVICE_KEY'] : undefined) ||
-    (typeof process !== 'undefined' ? process.env['ABLVERTEX'] : undefined) ||
-    (typeof process !== 'undefined' ? process.env['ablvertex'] : undefined) ||
-    (typeof process !== 'undefined' ? process.env['SUPABASE_PUBLISHABLE_KEY'] : undefined) ||
-    (typeof process !== 'undefined' ? process.env['VITE_SUPABASE_PUBLISHABLE_KEY'] : undefined) ||
-    (typeof process !== 'undefined' ? process.env['SUPABASE_ANON_KEY'] : undefined) ||
-    (typeof process !== 'undefined' ? process.env['VITE_SUPABASE_ANON_KEY'] : undefined) ||
-    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
-    import.meta.env.VITE_SUPABASE_ANON_KEY ||
-    'sb_publishable_YfIAnkE91sQEIlWvbQ9rLg_nnGeftVP';
+  const SUPABASE_SERVICE_ROLE_KEY = process.env['SUPABASE_SERVICE_ROLE_KEY'];
 
   if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
     const missing = [
       ...(!SUPABASE_URL ? ['SUPABASE_URL'] : []),
-      ...(!SUPABASE_SERVICE_ROLE_KEY ? ['SUPABASE_SERVICE_ROLE_KEY / SUPABASE_PUBLISHABLE_KEY'] : []),
+      ...(!SUPABASE_SERVICE_ROLE_KEY ? ['SUPABASE_SERVICE_ROLE_KEY'] : []),
     ];
     const message = `Missing Supabase environment variable(s): ${missing.join(', ')}. Connect Supabase in Lovable Cloud.`;
     console.error(`[Supabase] ${message}`);
