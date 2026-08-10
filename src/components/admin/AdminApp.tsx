@@ -234,6 +234,8 @@ function Shell({ onLogout }: { onLogout: () => void }) {
               onSearch={setSearch}
               onStatus={setStatus}
               onOpen={openRequest}
+              onNotify={setToast}
+              onRefresh={load}
             />
           )}
           {section === "analytics" && <Analytics />}
