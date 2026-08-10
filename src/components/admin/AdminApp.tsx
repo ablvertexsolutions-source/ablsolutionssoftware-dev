@@ -362,8 +362,28 @@ function Logs({
   onSearch: (v: string) => void;
   onStatus: (v: string) => void;
   onOpen: (r: DemoRequest) => void;
+  onNotify: (m: string) => void;
+  onRefresh: () => void;
 }) {
   const filters = ["All", ...STATUSES];
+  const [pending, setPending] = useState<DemoRequest | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  const confirmDelete = async () => {
+    if (!pending) return;
+    setBusy(true);
+    try {
+      await deleteRequest({ data: { id: pending.id } });
+      setPending(null);
+      onNotify("Customer request deleted successfully.");
+      onRefresh();
+    } catch {
+      setPending(null);
+      onNotify("Unable to delete this customer request. Please try again.");
+    } finally {
+      setBusy(false);
+    }
+  };
   return (
     <div className="space-y-6">
       <Header title="Customer Logs" subtitle="Every demo request submitted from the website." />
