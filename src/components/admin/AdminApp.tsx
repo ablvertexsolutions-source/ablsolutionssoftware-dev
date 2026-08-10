@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { Trash2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   STATUSES,
