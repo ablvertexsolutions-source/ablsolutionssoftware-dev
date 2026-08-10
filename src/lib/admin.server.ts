@@ -7,7 +7,8 @@ export const DEFAULT_PASSWORD = "1111";
 export const ADMIN_USERNAME = "admin";
 
 function sessionConfig() {
-  const password = process.env["ADMIN_SESSION_SECRET"] || "abl-vertex-solutions-admin-session-secret-32-chars";
+  const password = process.env["ADMIN_SESSION_SECRET"];
+  if (!password) throw new Error("Admin session configuration is unavailable.");
   return {
     password,
     name: "abl-admin",
@@ -38,7 +39,9 @@ function toHex(buf: ArrayBuffer) {
 }
 
 async function derive(password: string, saltHex: string, iter: number) {
-  const salt = Uint8Array.from(saltHex.match(/.{2}/g)!.map((h) => parseInt(h, 16)));
+  const saltParts = saltHex.match(/.{2}/g);
+  if (!saltParts) throw new Error("Invalid password hash.");
+  const salt = Uint8Array.from(saltParts.map((h) => parseInt(h, 16)));
   const key = await crypto.subtle.importKey(
     "raw",
     new TextEncoder().encode(password),
@@ -70,38 +73,26 @@ export async function verifyPassword(password: string, stored: string) {
 }
 
 export async function getSetting(key: string) {
-  try {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data, error } = await supabaseAdmin
-      .from("admin_settings")
-      .select("value")
-      .eq("key", key)
-      .maybeSingle();
-    if (error && error.code === "PGRST205") {
-      console.warn(`[admin] Table 'admin_settings' does not exist yet.`);
-      return null;
-    }
-    return (data?.value as string | null) ?? null;
-  } catch (e) {
-    console.error("[admin] getSetting failed", e);
-    return null;
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data, error } = await supabaseAdmin
+    .from("admin_settings")
+    .select("value")
+    .eq("key", key)
+    .maybeSingle();
+  if (error) {
+    console.error("[admin] settings read failed", error.message);
+    throw new Error("Admin credential storage is unavailable.");
   }
+  return (data?.value as string | null) ?? null;
 }
 
 export async function setSetting(key: string, value: string | null) {
-  try {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin
-      .from("admin_settings")
-      .upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: "key" });
-    if (error) {
-      if (error.code === "PGRST205") {
-        console.warn(`[admin] Table 'admin_settings' does not exist. Cannot save setting '${key}'. Admin login will continue using default credentials.`);
-      } else {
-        console.error(`[admin] setSetting error for '${key}':`, error.message);
-      }
-    }
-  } catch (e) {
-    console.error(`[admin] setSetting exception for '${key}':`, e);
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { error } = await supabaseAdmin
+    .from("admin_settings")
+    .upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: "key" });
+  if (error) {
+    console.error(`[admin] settings write failed for '${key}'`, error.message);
+    throw new Error("Admin credential storage is unavailable.");
   }
 }

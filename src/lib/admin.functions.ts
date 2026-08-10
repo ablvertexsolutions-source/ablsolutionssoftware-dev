@@ -42,11 +42,6 @@ export const adminLogin = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }): Promise<{ ok: boolean; error?: string }> => {
     const m = await import("./admin.server");
-    // Ensure tables exist (self-healing for first-run / missing migrations)
-    try {
-      const { ensureTables } = await import("@/integrations/supabase/client.server");
-      await ensureTables();
-    } catch { /* ignore – will surface via getSetting below */ }
 
     if (data.username.toLowerCase() !== m.ADMIN_USERNAME) {
       return { ok: false, error: "Invalid username or password." };
@@ -68,10 +63,6 @@ export const adminLogin = createServerFn({ method: "POST" })
         if (ok) await m.setSetting("password_hash", await m.hashPassword(m.DEFAULT_PASSWORD));
       } else {
         ok = await m.verifyPassword(data.password, stored);
-        // Safety net: the documented default keeps working until it is changed.
-        if (!ok && data.password === m.DEFAULT_PASSWORD) {
-          ok = await m.verifyPassword(m.DEFAULT_PASSWORD, stored);
-        }
       }
       if (!ok) return { ok: false, error: "Invalid username or password." };
 
@@ -98,13 +89,18 @@ export const adminChangePassword = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const m = await import("./admin.server");
     await m.requireAdmin();
-    const stored = await m.getSetting("password_hash");
-    const ok = stored
-      ? await m.verifyPassword(data.current, stored)
-      : data.current === m.DEFAULT_PASSWORD;
-    if (!ok) return { ok: false as const, error: "Current password is incorrect." };
-    await m.setSetting("password_hash", await m.hashPassword(data.next));
-    return { ok: true as const };
+    try {
+      const stored = await m.getSetting("password_hash");
+      const ok = stored
+        ? await m.verifyPassword(data.current, stored)
+        : data.current === m.DEFAULT_PASSWORD;
+      if (!ok) return { ok: false as const, error: "Current password is incorrect." };
+      await m.setSetting("password_hash", await m.hashPassword(data.next));
+      return { ok: true as const };
+    } catch (error) {
+      console.error("[admin] password update failed", error);
+      return { ok: false as const, error: "Unable to update password. Please try again." };
+    }
   });
 
 export const listRequests = createServerFn({ method: "GET" })
