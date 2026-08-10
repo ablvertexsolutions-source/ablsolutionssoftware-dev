@@ -135,7 +135,10 @@ export async function ensureTables(): Promise<void> {
       CREATE INDEX IF NOT EXISTS demo_requests_created_at_idx ON public.demo_requests (created_at DESC);
     `;
 
-    const { error: rpcError } = await client.rpc('exec_sql', { sql });
+    const { error: rpcError } = await (client.rpc as unknown as (
+      fn: string,
+      args: Record<string, unknown>,
+    ) => Promise<{ error: { message: string } | null }>)('exec_sql', { sql });
     if (rpcError) {
       console.warn('[supabase] exec_sql RPC notice:', rpcError.message);
       _tablesEnsured = false;
