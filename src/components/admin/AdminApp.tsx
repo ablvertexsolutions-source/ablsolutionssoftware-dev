@@ -418,7 +418,7 @@ function Logs({
           <table className="w-full min-w-[1100px] border-collapse text-left text-[12px]">
             <thead>
               <tr className="font-display text-[9px] uppercase tracking-[0.2em] text-white/35">
-                {["Request ID", "Date", "Time", "Full Name", "Company", "Email", "Phone", "Country", "Subject", "System", "Status"].map(
+                {["Request ID", "Date", "Time", "Full Name", "Company", "Email", "Phone", "Country", "Subject", "System", "Status", "Actions"].map(
                   (h) => (
                     <th key={h} className="border-b border-white/8 px-3 py-3 font-normal">
                       {h}
@@ -449,6 +449,20 @@ function Logs({
                   <td className="border-b border-white/5 px-3 py-3">
                     <StatusPill status={r.status} />
                   </td>
+                  <td className="border-b border-white/5 px-3 py-3 text-right">
+                    <button
+                      type="button"
+                      aria-label="Delete request"
+                      title="Delete request"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPending(r);
+                      }}
+                      className="grid h-8 w-8 place-items-center rounded-lg border border-white/10 text-white/40 transition hover:border-rose-400/50 hover:text-rose-300"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -456,6 +470,31 @@ function Logs({
           {!rows.length && <p className="py-10 text-center text-[13px] text-white/35">No matching requests.</p>}
         </div>
       </div>
+
+      <AnimatePresence>
+        {pending && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[170] grid place-items-center p-4"
+          >
+            <div className="fixed inset-0 bg-[#04070f]/85 backdrop-blur-xl" onClick={() => !busy && setPending(null)} />
+            <div className={`relative w-full max-w-md p-7 text-center ${card}`}>
+              <p className="font-display text-lg font-light text-white">Delete Customer Request?</p>
+              <p className="mt-3 text-[13px] leading-relaxed text-white/45">
+                Are you sure you want to permanently delete this demo request? This action cannot be undone.
+              </p>
+              <div className="mt-7 flex justify-center gap-3">
+                <GhostBtn onClick={() => !busy && setPending(null)}>Cancel</GhostBtn>
+                <GhostBtn tone="danger" onClick={confirmDelete}>
+                  {busy ? "Deleting…" : "Delete"}
+                </GhostBtn>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
