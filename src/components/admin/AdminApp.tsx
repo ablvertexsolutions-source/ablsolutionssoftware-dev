@@ -355,6 +355,8 @@ function Logs({
   onSearch,
   onStatus,
   onOpen,
+  onNotify,
+  onRefresh,
 }: {
   rows: DemoRequest[];
   search: string;
