@@ -763,12 +763,16 @@ function Maintenance({ onLogout }: { onLogout: () => void }) {
     e.preventDefault();
     if (next !== confirmPw) return setMsg("New passwords do not match.");
     if (next.length < 4) return setMsg("New password must be at least 4 characters.");
-    const r = await adminChangePassword({ data: { current, next } });
-    setMsg(r.ok ? "Password changed successfully." : r.error ?? "Could not change password.");
-    if (r.ok) {
-      setCurrent("");
-      setNext("");
-      setConfirmPw("");
+    try {
+      const r = await adminChangePassword({ data: { current, next } });
+      setMsg(r.ok ? "Password changed successfully." : r.error ?? "Could not change password.");
+      if (r.ok) {
+        setCurrent("");
+        setNext("");
+        setConfirmPw("");
+      }
+    } catch {
+      setMsg("Could not change password. Please log in again and retry.");
     }
   };
 
