@@ -16,8 +16,8 @@ const schema = z.object({
 export const submitDemoRequest = createServerFn({ method: "POST" })
   .validator((data: unknown) => schema.parse(data))
   .handler(async ({ data }) => {
-    const { supabaseAdmin, ensureTables } = await import("@/integrations/supabase/client.server");
-    await ensureTables();
+    const { createPublicServerClient } = await import("./supabase-public.server");
+    const db = createPublicServerClient();
     const payload = {
       full_name: data.full_name,
       work_email: data.work_email,
@@ -31,7 +31,7 @@ export const submitDemoRequest = createServerFn({ method: "POST" })
       status: "New",
     };
     
-    const { error } = await supabaseAdmin
+    const { error } = await db
       .from("demo_requests")
       .insert(payload);
 
