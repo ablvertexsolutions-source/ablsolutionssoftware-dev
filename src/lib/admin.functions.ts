@@ -88,16 +88,25 @@ export const adminChangePassword = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const m = await import("./admin.server");
-    await m.requireAdmin();
     try {
+      await m.requireAdmin();
       const stored = await m.getSetting("password_hash");
       const ok = stored
         ? await m.verifyPassword(data.current, stored)
         : data.current === m.DEFAULT_PASSWORD;
       if (!ok) return { ok: false as const, error: "Current password is incorrect." };
-      await m.setSetting("password_hash", await m.hashPassword(data.next));
+      const nextHash = await m.hashPassword(data.next);
+      await m.setSetting("password_hash", nextHash);
+      // Confirm the stored record really changed before reporting success.
+      const saved = await m.getSetting("password_hash");
+      if (saved !== nextHash) {
+        return { ok: false as const, error: "Password update could not be confirmed. Please try again." };
+      }
       return { ok: true as const };
     } catch (error) {
+      if (error instanceof Error && error.message === "Unauthorized") {
+        return { ok: false as const, error: "Your admin session expired. Please log in again." };
+      }
       console.error("[admin] password update failed", error);
       return { ok: false as const, error: "Unable to update password. Please try again." };
     }
